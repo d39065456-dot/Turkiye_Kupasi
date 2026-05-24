@@ -13,21 +13,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Adım: Kodları sunucuya çek
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # 2. Adım: Önbelleği temizle ve Buildozer için hazır Action şablonunu çalıştır
-      - name: Build APK with Buildozer Action
-        uses: ArtemGovorov/buildozer-action@v1
-        with:
-          workdir: .
-          buildozer_version: stable
+      - name: Build APK using Buildozer Docker
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}:/home/buildozer/src \
+            kivy/buildozer \
+            android debug
 
-      # 3. Adım: Oluşan APK dosyasını sisteme yükle
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Turkiye-Kupasi-APK
           path: bin/*.apk
+
           
