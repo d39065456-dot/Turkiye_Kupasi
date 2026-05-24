@@ -10,59 +10,21 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
+      # 1. Adım: Kodları sunucuya çek
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v5
+      # 2. Adım: Önbelleği temizle ve Buildozer için hazır Action şablonunu çalıştır
+      - name: Build APK with Buildozer Action
+        uses: ArtemGovorov/buildozer-action@v1
         with:
-          python-version: '3.11'
+          workdir: .
+          buildozer_version: stable
 
-      - name: Install System Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            build-essential \
-            git \
-            libsdl2-dev \
-            libsdl2-image-dev \
-            libsdl2-mixer-dev \
-            libsdl2-ttf-dev \
-            libportmidi-dev \
-            zlib1g-dev \
-            libsqlite3-dev \
-            sqlite3 \
-            bzip2 \
-            libbz2-dev \
-            libssl-dev \
-            openssl \
-            libgdbm-dev \
-            libgdbm-compat-dev \
-            liblzma-dev \
-            libreadline-dev \
-            libncursesw5-dev \
-            libffi-dev \
-            uuid-dev \
-            tar \
-            unzip \
-            zip \
-            openjdk-17-jdk \
-            autoconf \
-            libtool \
-            pkg-config
-
-      - name: Install Buildozer and Compatible Cython
-        run: |
-          python -m pip install --upgrade pip
-          pip install "cython<3.0.0" wheel virtualenv buildozer
-
-      - name: Build Android APK with Buildozer
-        run: |
-          buildozer -v android debug
-
+      # 3. Adım: Oluşan APK dosyasını sisteme yükle
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
